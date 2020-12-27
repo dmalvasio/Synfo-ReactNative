@@ -1,56 +1,107 @@
-import * as React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { navigationRef } from './RootNavigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import Icon from "react-native-vector-icons/FontAwesome"
-import s from './NavigatorStyle'
+import React, { useReducer, useEffect, useMemo } from "react";
+import { View, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { navigationRef } from "./RootNavigation";
+import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import HomeScreen from '../screens/HomeScreen'
-import LoginScreen from '../screens/LoginScreen'
+import { AuthContext } from "../context/AuthContext";
 
-function DrawerMenu(props){
-  return(
-    <TouchableOpacity onPress={props.navigation}>
-      <View style={s.menuContainer}>
-        <View style={s.iconoContainer}>
-           <Icon size={17} name={props.iconName}/>
-        </View>
-        <View style={s.tituloContainer}>
-           <Text style={s.tituloTxt}>{props.titleName}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-}
-
-function Menu(props) {
-  return(
-    <View style={s.container}>
-      <View style={s.bgContainer}>
-        <TouchableOpacity>
-          <View style={s.userContainer}>
-              <Image style={s.userImagen} source={ require('../assets/synfo.jpg')}/>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <DrawerMenu iconName='home' titleName='Home' navigation={()=>props.navigation.navigate('Home')}/>
-      <DrawerMenu iconName='user' titleName='Login' navigation={()=>props.navigation.navigate('Login')}/>
-    </View>
-  )
-}
+import HomeScreen from "../screens/homeScreen/HomeScreen";
+import LoginScreen from "../screens/loginScreen/LoginScreen";
+import Menu from "./DrawerMenu";
+import { HOME, LOGIN } from "../constants/Screens";
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
-function SynfoNavigator() {
-  return (
-    <NavigationContainer ref={navigationRef}>
-      <Drawer.Navigator drawerContent={(props)=> <Menu {...props}/>}>
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Login" component={LoginScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+const SynfoNavigator = () => {
+  const initialLoginState = {
+    isLoading: true,
+    token: null,
+  };
+
+  const loginReducer = (state, action) => {
+    switch (action.type) {
+      case "REGISTER_TOKEN":
+        return {
+          token: action.token,
+          isLoading: false,
+        };
+      case "LOGIN":
+        return {
+          token: action.token,
+          isLoading: false,
+        };
+      case "LOGOUT":
+        return {
+          token: null,
+          isLoading: false,
+        };
+    }
+  };
+
+  const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      let userToken;
+      userToken = null;
+      try {
+        userToken = await AsyncStorage.getItem("@token");
+      } catch (e) {
+        console.log(e);
+      }
+      dispatch({ type: "REGISTER_TOKEN", token: userToken });
+    }, 1000);
+  }, []);
+
+  const authContext = useMemo(
+    () => ({
+      login: async (token) => {
+        try {
+          await AsyncStorage.setItem("@token", token);
+        } catch (e) {
+          console.log(e);
+        }
+        dispatch({ type: "LOGIN", token });
+      },
+      logout: async () => {
+        try {
+          await AsyncStorage.removeItem("@token");
+        } catch (e) {
+          console.log(e);
+        }
+        dispatch({ type: "LOGOUT" });
+      },
+    }),
+    []
   );
-}
+
+  if (loginState.isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer ref={navigationRef}>
+        {loginState.token ? (
+          <Drawer.Navigator drawerContent={(props) => <Menu {...props} />}>
+            <Drawer.Screen name={HOME} component={HomeScreen} />
+          </Drawer.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen name={LOGIN} component={LoginScreen} />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </AuthContext.Provider>
+  );
+};
 
 export default SynfoNavigator;
