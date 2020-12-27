@@ -1,18 +1,12 @@
-import React from 'react';
-import 'react-native-gesture-handler'
-import SynfoNavigator from './navigation/SynfoNavigator'
+import React from "react";
+import { ApolloProvider } from "@apollo/react-hooks";
+import SynfoNavigator from "./navigation/SynfoNavigator";
+import { client } from "./client/Index";
 
 export default function App() {
-  return <SynfoNavigator />;
+  return (
+    <ApolloProvider client={client}>
+      <SynfoNavigator />
+    </ApolloProvider>
+  );
 }
-
-
-
-
-
-
-
-// const styles = StyleSheet.create({
-//   container: {
-//   },
-// });
