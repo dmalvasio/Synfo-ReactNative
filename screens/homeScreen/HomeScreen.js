@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useQuery } from "@apollo/react-hooks";
 
-import { GET_MOVIES } from "../../client/Queries";
+import { GET_MOVIES } from "../../client/queries";
 import { MOVIE_INFO } from "../../constants/Screens";
 import Loading from "../../components/loading/Loading";
 import MenuButton from "../../components/menuButton/MenuButton";

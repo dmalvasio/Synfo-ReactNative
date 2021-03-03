@@ -5,7 +5,7 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import styles from "./Styles";
-import { GET_PROFILE } from "../../client/Queries";
+import { GET_PROFILE } from "../../client/queries";
 import FavMovieProfile from "../../components/favMovieProfile/FavMovieProfile";
 import Loading from "../../components/loading/Loading";
 import MenuButton from "../../components/menuButton/MenuButton";

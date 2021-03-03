@@ -6,7 +6,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useMutation } from "@apollo/react-hooks";
-import { LOGIN_MUTATION } from "../../client/Queries";
+import { LOGIN_MUTATION } from "../../client/queries";
 import { AuthContext } from "../../context/AuthContext";
 
 import FormInput from "../../components/formInput/FormInput";
