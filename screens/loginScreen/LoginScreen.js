@@ -1,18 +1,24 @@
 import React, { useState, useContext } from "react";
-import { View, Text, KeyboardAvoidingView } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { useMutation, useQuery } from "@apollo/react-hooks";
-
-import { GET_USERS, LOGIN_MUTATION } from "../../client/queries";
+import {
+  KeyboardAvoidingView,
+  Text,
+  Platform,
+  SafeAreaView,
+} from "react-native";
+import { useMutation } from "@apollo/react-hooks";
+import { LOGIN_MUTATION } from "../../client/Queries";
 import { AuthContext } from "../../context/AuthContext";
+
+import FormInput from "../../components/formInput/FormInput";
+import FormButton from "../../components/formButton/FormButton";
+import styles from "./Styles";
+import { SYNFO } from "../../constants/Strings";
 
 export default LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { login } = useContext(AuthContext);
-
-  //const { loading, data } = useQuery(GET_USERS);
   const [loginRequest] = useMutation(LOGIN_MUTATION);
 
   const onPressLogin = () => {
@@ -32,32 +38,29 @@ export default LoginScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ fontSize: 20 }}>Login</Text>
-        <TextInput
-          style={{
-            height: 40,
-            width: 200,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.text}>{SYNFO}</Text>
+
+        <FormInput
+          labelValue={email}
+          onChangeText={(userEmail) => setEmail(userEmail)}
+          placeholderText="Email"
+          iconType="account-outline"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
         />
-        <TextInput
-          style={{
-            height: 40,
-            width: 200,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
+
+        <FormInput
+          labelValue={password}
+          onChangeText={(userPassword) => setPassword(userPassword)}
+          placeholderText="Password"
+          iconType="lock-outline"
+          secureTextEntry={true}
         />
-        <TouchableOpacity onPress={onPressLogin}>
-          <Text>Login</Text>
-        </TouchableOpacity>
-      </View>
+
+        <FormButton buttonTitle="LOGIN" onPress={onPressLogin} />
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
