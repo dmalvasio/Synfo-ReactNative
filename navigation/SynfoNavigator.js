@@ -1,5 +1,4 @@
 import React, { useReducer, useEffect, useMemo } from "react";
-import { View, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { navigationRef } from "./RootNavigation";
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,10 +7,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { AuthContext } from "../context/AuthContext";
 
-import HomeScreen from "../screens/homeScreen/HomeScreen";
 import LoginScreen from "../screens/loginScreen/LoginScreen";
 import Menu from "./DrawerMenu";
-import { HOME, LOGIN } from "../constants/Screens";
+import TabNavigation from "./TabNavigation";
+import { LOGIN } from "../constants/Screens";
+import Loading from "../components/loading/Loading";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -80,11 +80,7 @@ const SynfoNavigator = () => {
   );
 
   if (loginState.isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
@@ -92,10 +88,10 @@ const SynfoNavigator = () => {
       <NavigationContainer ref={navigationRef}>
         {loginState.token ? (
           <Drawer.Navigator drawerContent={(props) => <Menu {...props} />}>
-            <Drawer.Screen name={HOME} component={HomeScreen} />
+            <Drawer.Screen name={"Drawer"} component={TabNavigation} />
           </Drawer.Navigator>
         ) : (
-          <Stack.Navigator>
+          <Stack.Navigator headerMode="none">
             <Stack.Screen name={LOGIN} component={LoginScreen} />
           </Stack.Navigator>
         )}
