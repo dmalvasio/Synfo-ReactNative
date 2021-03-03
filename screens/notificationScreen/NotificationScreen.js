@@ -3,7 +3,7 @@ import { View, Text, FlatList, Image, SafeAreaView } from "react-native";
 import { useQuery } from "@apollo/react-hooks";
 
 import styles from "./Styles";
-import { GET_NOTIFICATIONS } from "../../client/Queries";
+import { GET_NOTIFICATIONS } from "../../client/queries";
 import Loading from "../../components/loading/Loading";
 import MenuButton from "../../components/menuButton/MenuButton";
 import { NOTIFICATIONS } from "../../constants/Strings";

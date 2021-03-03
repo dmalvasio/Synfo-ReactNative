@@ -2,6 +2,7 @@ import React from "react";
 import { View, TextInput } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import styles from "./Styles";
 
 const FormInput = ({ labelValue, placeholderText, iconType, ...rest }) => {
   return (

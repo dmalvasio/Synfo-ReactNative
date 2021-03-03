@@ -5,7 +5,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import BackButton from "../../components/backButton/BackButton";
-import { GET_MOVIE_INFO } from "../../client/Queries";
+import { GET_MOVIE_INFO } from "../../client/queries";
 import Loading from "../../components/loading/Loading";
 import styles from "./Styles";
 import { MOVIE_DETAIL } from "../../constants/Strings";
